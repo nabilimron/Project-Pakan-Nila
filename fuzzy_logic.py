@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def trapmf(x, params):
     """Fungsi keanggotaan Trapesium [a, b, c, d]."""
     a, b, c, d = params
@@ -14,7 +15,9 @@ def trapmf(x, params):
     if d > c:
         idx_turun = (x > c) & (x < d)
         y[idx_turun] = (d - x[idx_turun]) / (d - c)
+
     return y
+
 
 def trimf(x, params):
     """Fungsi keanggotaan Segitiga [a, b, c]."""
@@ -28,13 +31,17 @@ def trimf(x, params):
     if c > b:
         idx_turun = (x > b) & (x < c)
         y[idx_turun] = (c - x[idx_turun]) / (c - b)
+
     return y
+
 
 def _eval_trap(val, params):
     return float(trapmf(np.array([val], dtype=float), params)[0])
 
+
 def _eval_tri(val, params):
     return float(trimf(np.array([val], dtype=float), params)[0])
+
 
 def _bangun_basis_aturan():
     """Menghasilkan 81 kombinasi aturan IF-THEN (3x3x3x3) budidaya ikan nila."""
@@ -50,7 +57,6 @@ def _bangun_basis_aturan():
             for k in keruh_sets:
                 for b in bobot_sets:
                     if s in ('Dingin', 'Panas'):
-                        # Suhu ekstrem menurunkan nafsu makan ikan secara drastis
                         if p == 'Normal' and k == 'Jernih' and b == 'Besar':
                             output = 'Sedang'
                         else:
@@ -85,9 +91,12 @@ def _bangun_basis_aturan():
                         'output': output
                     })
                     nomor += 1
+
     return rules
 
+
 BASIS_ATURAN = _bangun_basis_aturan()
+
 
 def cek_kelayakan_air(suhu, ph, kekeruhan):
     """Mengevaluasi kondisi keselamatan kualitas air sebelum pemberian pakan."""
@@ -98,16 +107,17 @@ def cek_kelayakan_air(suhu, ph, kekeruhan):
         alasan.append(f"pH air berbahaya ({ph})")
     if kekeruhan > 85.0:
         alasan.append(f"kekeruhan terlalu tinggi ({kekeruhan} NTU)")
+
     if alasan:
         return False, f"Pakan ditunda karena {', '.join(alasan)}."
     return True, "Kondisi air mendukung pemberian pakan."
+
 
 def hitung_dosis_fuzzy(suhu, ph, kekeruhan, bobot):
     """
     Menjalankan proses Fuzzy Mamdani lengkap:
     1. Fuzzifikasi -> 2. Evaluasi 81 Aturan (MIN) -> 3. Agregasi (MAX) -> 4. Defuzzifikasi Centroid.
     """
-    #Fuzzifikasi tiap variabel masukan
     mu_suhu = {
         'Dingin': _eval_trap(suhu, [20, 20, 24, 26]),
         'Normal': _eval_tri(suhu, [24, 28, 32]),
@@ -129,7 +139,6 @@ def hitung_dosis_fuzzy(suhu, ph, kekeruhan, bobot):
         'Besar': _eval_trap(bobot, [250, 400, 500, 500]),
     }
 
-    # Semesta variabel keluaran: Dosis Pakan (0 - 100%)
     z = np.linspace(0, 100, 1001)
     mf_output = {
         'Sedikit': trapmf(z, [0, 0, 25, 50]),
@@ -161,16 +170,15 @@ def hitung_dosis_fuzzy(suhu, ph, kekeruhan, bobot):
                 'then_text': f"THEN Dosis {rule['output']}"
             })
 
-    # Urutkan aturan aktif berdasarkan kekuatan terbesar
     aturan_aktif.sort(key=lambda item: item['alpha'], reverse=True)
 
-    # 4. Defuzzifikasi Centroid
     if np.sum(agregasi) == 0:
         dosis_crisp = 50.0
     else:
         dosis_crisp = float(np.sum(z * agregasi) / np.sum(agregasi))
 
     dosis_final = round(dosis_crisp, 1)
+
     layak, keterangan_air = cek_kelayakan_air(suhu, ph, kekeruhan)
 
     if not layak:
