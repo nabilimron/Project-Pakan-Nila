@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header-row">
+    <div>
+        <h1 class="page-title">Pakan tepat. Budidaya optimal.</h1>
+        <p class="section-subtitle">Hitung dosis pakan ikan nila berdasarkan kondisi air dan bobot ikan.</p>
+    </div>
+    <span class="pill-teal">Sistem inferensi fuzzy</span>
+</div>
+
+{% if errors %}
+<div class="alert-error">
+    <strong>Masukan tidak valid:</strong>
+    <ul>
+        {% for err in errors %}
+        <li>{{ err }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="sistem-grid">
+    <!-- Kolom Kiri: Form Input -->
+    <form method="POST" action="{{ url_for('sistem') }}" class="card-white">
+        <div class="card-header-border">
+            <h2 class="card-title">Parameter budidaya</h2>
+            <p class="card-subtitle">Sesuaikan dengan hasil pengukuran terbaru.</p>
+        </div>
+
+        <!-- Suhu Air -->
+        <div class="form-group">
+            <div class="form-row-top">
+                <label for="suhu_num" class="form-label">Suhu Air (&deg;C)</label>
+                <input type="number" step="0.1" min="20" max="35" id="suhu_num" name="suhu"
+                       value="{{ input_data.suhu }}" class="number-box">
+            </div>
+            <input type="range" step="0.5" min="20" max="35" id="suhu_range"
+                   value="{{ input_data.suhu }}" class="teal-slider">
+            <div class="range-bounds">
+                <span>20 &deg;C</span>
+                <span>35 &deg;C</span>
+            </div>
+        </div>
+
+        <!-- pH Air -->
+        <div class="form-group">
+            <div class="form-row-top">
+                <label for="ph_num" class="form-label">pH Air</label>
+                <input type="number" step="0.1" min="4.0" max="10.0" id="ph_num" name="ph"
+                       value="{{ input_data.ph }}" class="number-box">
+            </div>
+            <input type="range" step="0.1" min="4.0" max="10.0" id="ph_range"
+                   value="{{ input_data.ph }}" class="teal-slider">
+            <div class="range-bounds">
+                <span>4.0</span>
+                <span>10.0</span>
+            </div>
+        </div>
+
+        <!-- Kekeruhan -->
+        <div class="form-group">
+            <div class="form-row-top">
+                <label for="kekeruhan_num" class="form-label">Kekeruhan (NTU)</label>
+                <input type="number" step="1" min="0" max="100" id="kekeruhan_num" name="kekeruhan"
+                       value="{{ input_data.kekeruhan }}" class="number-box">
+            </div>
+            <input type="range" step="1" min="0" max="100" id="kekeruhan_range"
+                   value="{{ input_data.kekeruhan }}" class="teal-slider">
+            <div class="range-bounds">
+                <span>0 NTU</span>
+                <span>100 NTU</span>
+            </div>
+        </div>
+
+        <!-- Bobot Ikan -->
+        <div class="form-group">
+            <div class="form-row-top">
+                <label for="bobot_num" class="form-label">Bobot Ikan (gram)</label>
+                <input type="number" step="1" min="10" max="500" id="bobot_num" name="bobot"
+                       value="{{ input_data.bobot }}" class="number-box">
+            </div>
+            <input type="range" step="5" min="10" max="500" id="bobot_range"
+                   value="{{ input_data.bobot }}" class="teal-slider">
+            <div class="range-bounds">
+                <span>10 gram</span>
+                <span>500 gram</span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">
+            <span></span>
+            <span>Hitung Dosis Pakan</span>
+            <span>&rarr;</span>
+        </button>
+
+        <p class="form-footnote">Perhitungan menggunakan metode logika fuzzy Mamdani (81 aturan).</p>
+    </form>
+
+    <!-- Hasil dan Aturan -->
+    <div class="result-column">
+        <div class="card-mint">
+            <div class="result-top">
+                <span style="font-size: 14px; font-weight: 500; color: #475569;">Rekomendasi Dosis:</span>
+                <span class="pill-teal-dark">{{ hasil.kategori }}</span>
+            </div>
+
+            <div class="dose-number">{{ hasil.dosis }}%</div>
+            <p class="status-desc">Persentase dosis pakan dari hasil evaluasi parameter.</p>
+
+            <div class="progress-wrapper">
+                <div class="progress-track">
+                    <div class="progress-fill" id="dose_progress" data-width="{{ hasil.dosis }}"></div>
+                </div>
+                <div class="range-bounds">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <div class="status-row">
+                {% if hasil.status_layak %}
+                <span class="badge-status badge-success">
+                    <span>&#10003;</span>
+                    <span>{{ hasil.status_teks }}</span>
+                </span>
+                {% else %}
+                <span class="badge-status badge-danger">
+                    <span>!</span>
+                    <span>{{ hasil.status_teks }}</span>
+                </span>
+                {% endif %}
+                <span class="status-desc">{{ hasil.status_ket }}</span>
+            </div>
+        </div>
+
+        <div class="card-white">
+            <div class="rules-header">
+                <div>
+                    <h2 class="card-title">Aturan Fuzzy Aktif</h2>
+                    <p class="card-subtitle">Kombinasi kondisi yang membentuk rekomendasi dosis.</p>
+                </div>
+                <span class="pill-gray">{{ hasil.aturan|length }} aturan</span>
+            </div>
+
+            <div class="rules-list">
+                {% for rule in hasil.aturan %}
+                <div class="rule-item">
+                    <span class="rule-num">{{ rule.no }}</span>
+                    <div>
+                        <p class="rule-if">{{ rule.if_text }}</p>
+                        <p class="rule-then">{{ rule.then_text }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const pairs = [
+        { range: 'suhu_range', num: 'suhu_num' },
+        { range: 'ph_range', num: 'ph_num' },
+        { range: 'kekeruhan_range', num: 'kekeruhan_num' },
+        { range: 'bobot_range', num: 'bobot_num' }
+    ];
+
+    function updateSliderTrack(slider) {
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        const val = parseFloat(slider.value);
+        const percent = ((val - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(to right, #0D7A7E ${percent}%, #E2E8F0 ${percent}%)`;
+    }
+
+    pairs.forEach(pair => {
+        const rangeEl = document.getElementById(pair.range);
+        const numEl = document.getElementById(pair.num);
+
+        updateSliderTrack(rangeEl);
+
+        rangeEl.addEventListener('input', () => {
+            numEl.value = rangeEl.value;
+            updateSliderTrack(rangeEl);
+        });
+
+        numEl.addEventListener('input', () => {
+            rangeEl.value = numEl.value;
+            updateSliderTrack(rangeEl);
+        });
+    });
+
+    const progressFill = document.getElementById('dose_progress');
+    if (progressFill) {
+        progressFill.style.width = `${progressFill.dataset.width}%`;
+    }
+</script>
+{% endblock %}

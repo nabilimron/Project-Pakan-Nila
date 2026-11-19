@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="about-header">
+    <p class="eyebrow">TENTANG JUKU NILA</p>
+    <h1 class="about-title">Teknologi sederhana untuk budidaya yang lebih cerdas.</h1>
+    <p class="section-subtitle">Kenali tujuan, parameter, dan pendekatan di balik rekomendasi pakan ikan nila.</p>
+</section>
+
+<section class="grid-2">
+    <div class="card-white">
+        <h2 class="card-title">Apa itu JUKU NILA?</h2>
+        <p class="about-text">
+            JUKU NILA adalah sistem pendukung keputusan untuk membantu pembudidaya menentukan dosis pakan ikan nila berdasarkan kondisi air dan bobot ikan.
+        </p>
+        <p class="about-text">
+            Dengan logika fuzzy, kondisi budidaya diterjemahkan menjadi rekomendasi dosis beserta aturan yang mendasarinya.
+        </p>
+    </div>
+
+    <div class="card-mint">
+        <h2 class="card-title">4 parameter yang dipertimbangkan</h2>
+        <div class="param-grid">
+            <div class="param-item">
+                <h4>Suhu air</h4>
+                <p>Temperatur air dalam &deg;C</p>
+            </div>
+            <div class="param-item">
+                <h4>pH air</h4>
+                <p>Tingkat keasaman air</p>
+            </div>
+            <div class="param-item">
+                <h4>Kekeruhan</h4>
+                <p>Kejernihan air dalam NTU</p>
+            </div>
+            <div class="param-item">
+                <h4>Bobot ikan</h4>
+                <p>Berat ikan dalam gram</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <h2 class="section-title">Rekomendasi yang bisa dipahami.</h2>
+
+    <div class="grid-3">
+        <div class="step-card">
+            <h3>Berbasis kondisi budidaya</h3>
+            <p>Masukan dari pengukuran Anda menjadi dasar evaluasi dosis pakan.</p>
+        </div>
+
+        <div class="step-card">
+            <h3>Aturan yang transparan</h3>
+            <p>Aturan fuzzy aktif ditampilkan agar hasilnya lebih mudah ditelusuri.</p>
+        </div>
+
+        <div class="step-card">
+            <h3>Tetap dalam kendali Anda</h3>
+            <p>Gunakan hasil sebagai pertimbangan, bukan pengganti pengamatan langsung.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-banner">
+    <div>
+        <h3>Siap menghitung dosis pakan?</h3>
+        <p>Masukkan hasil pengukuran terbaru di halaman Sistem.</p>
+    </div>
+    <a href="{{ url_for('sistem') }}" class="btn btn-primary">
+        <span>Buka Sistem</span>
+        <span>&rarr;</span>
+    </a>
+</section>
+{% endblock %}

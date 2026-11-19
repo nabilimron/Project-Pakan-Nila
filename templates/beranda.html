@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-grid">
+    <div>
+        <p class="eyebrow">SMART AQUACULTURE</p>
+        <h1 class="hero-title">Pakan tepat untuk<br>ikan nila yang sehat.</h1>
+        <p class="hero-desc">
+            Bantu tentukan dosis pakan berdasarkan kondisi air dan bobot ikan dengan perhitungan logika fuzzy yang mudah dipahami.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{{ url_for('sistem') }}" class="btn btn-primary">
+                <span>Mulai Hitung Dosis</span>
+                <span>&rarr;</span>
+            </a>
+            <a href="{{ url_for('tentang') }}" class="btn btn-outline">
+                Pelajari Sistem
+            </a>
+        </div>
+
+        <p class="hero-note">4 parameter budidaya &middot; 1 rekomendasi yang jelas</p>
+    </div>
+
+    <div>
+        <div class="card-mint">
+            <p class="eyebrow" style="margin-bottom: 12px;">CONTOH REKOMENDASI</p>
+            <p style="font-size: 14px; font-weight: 500; color: #475569;">Rekomendasi Dosis:</p>
+            <div class="dose-number">83.3%</div>
+
+            <div class="badge-status badge-success">
+                <span>&#10003;</span>
+                <span>Status Air: Layak</span>
+            </div>
+
+            <p class="preview-divider">Ilustrasi hasil perhitungan</p>
+
+            <div class="mini-params">
+                <div>
+                    <span>Suhu air</span>
+                    <strong>28 &deg;C</strong>
+                </div>
+                <div>
+                    <span>pH air</span>
+                    <strong>7.2</strong>
+                </div>
+                <div>
+                    <span>Kekeruhan</span>
+                    <strong>15 NTU</strong>
+                </div>
+                <div>
+                    <span>Bobot ikan</span>
+                    <strong>150 g</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-block">
+    <h2 class="section-title">Keputusan pakan, lebih sederhana.</h2>
+    <p class="section-subtitle">Dari pengukuran hingga rekomendasi dalam satu alur.</p>
+
+    <div class="grid-3">
+        <div class="step-card">
+            <span class="step-num">01</span>
+            <h3>Masukkan kondisi budidaya</h3>
+            <p>Gunakan suhu, pH, kekeruhan air, dan bobot ikan dari pengukuran Anda.</p>
+        </div>
+
+        <div class="step-card">
+            <span class="step-num">02</span>
+            <h3>Hitung dengan logika fuzzy</h3>
+            <p>Sistem mengevaluasi kombinasi parameter untuk menentukan dosis pakan.</p>
+        </div>
+
+        <div class="step-card">
+            <span class="step-num">03</span>
+            <h3>Pahami rekomendasinya</h3>
+            <p>Lihat dosis, kelayakan air, dan aturan fuzzy yang mendasari hasilnya.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
