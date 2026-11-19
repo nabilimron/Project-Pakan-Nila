@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUKU NILA - Sistem Pendukung Keputusan Pakan Ikan Nila</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container navbar-inner">
+            <a href="{{ url_for('beranda') }}" class="brand">JUKU NILA</a>
+
+            <nav class="nav-links">
+                <a href="{{ url_for('beranda') }}"
+                   class="nav-link {{ 'active' if active_page == 'beranda' else '' }}">
+                    Beranda
+                </a>
+                <a href="{{ url_for('sistem') }}"
+                   class="nav-link {{ 'active' if active_page == 'sistem' else '' }}">
+                    Sistem
+                </a>
+                <a href="{{ url_for('tentang') }}"
+                   class="nav-link {{ 'active' if active_page == 'tentang' else '' }}">
+                    Tentang
+                </a>
+            </nav>
+
+            <div class="nav-spacer"></div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div>
+                <span class="footer-brand">JUKU NILA</span>
+                <span>Budidaya lebih cerdas, pakan lebih efisien.</span>
+            </div>
+            <div>
+                Rekomendasi sebagai pendukung keputusan budidaya.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
